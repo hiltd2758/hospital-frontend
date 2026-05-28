@@ -18,8 +18,8 @@ export default function LoginPage() {
 
         try {
 
-            await adminApi.login({ email, password });
-            setAuth("admin");
+            const res = await adminApi.login({ email, password });
+            setAuth("admin", res.data.token);
 
 
             navigate("/admin/dashboard");
