@@ -1,5 +1,3 @@
-// ─── Auth ───────────────────────────────────────────────────────────────────
-
 export type Role = "admin" | "doctor" | "patient";
 
 export interface LoginRequest {
@@ -16,8 +14,6 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
-// ─── Patient ─────────────────────────────────────────────────────────────────
-
 export interface Patient {
   id: number;
   email: string;
@@ -26,7 +22,7 @@ export interface Patient {
   lastName: string;
   phone?: string;
   address: string;
-  dateOfBirth: string; // ISO date string
+  dateOfBirth: string;
   avatar?: string;
 }
 
@@ -39,12 +35,10 @@ export interface PatientRegisterRequest {
   address?: string;
   dateOfBirth?: string;
 }
+
 export interface ClinicalInfo {
-  // Extend when backend clarifies fields
   [key: string]: unknown;
 }
-
-// ─── Doctor ──────────────────────────────────────────────────────────────────
 
 export interface Doctor {
   id: number;
@@ -58,8 +52,6 @@ export interface Doctor {
   [key: string]: unknown;
 }
 
-// ─── Appointment ─────────────────────────────────────────────────────────────
-
 export type AppointmentStatus =
   | "PENDING"
   | "CONFIRMED"
@@ -69,7 +61,7 @@ export type AppointmentStatus =
 export interface AppointmentRequest {
   patientId: number;
   doctorId: number;
-  scheduleTime: string; // ISO datetime string (LocalDateTime)
+  scheduleTime: string;
 }
 
 export interface Appointment {
@@ -82,8 +74,6 @@ export interface Appointment {
   doctorName?: string;
 }
 
-// ─── Admin ────────────────────────────────────────────────────────────────────
-
 export interface DashboardStats {
   totalPatients?: number;
   totalDoctors?: number;
@@ -91,7 +81,14 @@ export interface DashboardStats {
   [key: string]: unknown;
 }
 
-// ─── API Responses ────────────────────────────────────────────────────────────
+export interface AdminStatistics {
+  totalDoctors: number;
+  totalPatients: number;
+  totalAppointments: number;
+  pending: number;
+  confirmed: number;
+  cancelled: number;
+}
 
 export interface ApiError {
   error: string;

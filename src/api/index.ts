@@ -9,11 +9,10 @@ import type {
   AppointmentRequest,
   AppointmentStatus,
   DashboardStats,
+  AdminStatistics,
   ApiMessage,
   ClinicalInfo,
 } from "@/types";
-
-// ─── Patient Auth ─────────────────────────────────────────────────────────────
 
 export const patientApi = {
   login: (data: LoginRequest) =>
@@ -32,7 +31,6 @@ export const patientApi = {
   getClinicalInfo: (id: number) =>
     api.get<ClinicalInfo>(`/api/patient/clinical-info/${id}`),
 
-  // Appointments
   getDoctors: () => api.get<Doctor[]>("/api/patient/appointment/doctors"),
 
   bookAppointment: (data: AppointmentRequest) =>
@@ -44,8 +42,6 @@ export const patientApi = {
   cancelAppointment: (id: number) =>
     api.post<ApiMessage>(`/api/patient/appointment/cancel/${id}`),
 };
-
-// ─── Doctor ───────────────────────────────────────────────────────────────────
 
 export const doctorApi = {
   login: (data: LoginRequest) =>
@@ -68,8 +64,6 @@ export const doctorApi = {
   getPatient: (id: number) => api.get<Patient>(`/api/doctor/patient/${id}`),
 };
 
-// ─── Admin ────────────────────────────────────────────────────────────────────
-
 export const adminApi = {
   login: (data: LoginRequest) =>
     api.post<LoginResponse>("/api/admin/login", data),
@@ -78,7 +72,7 @@ export const adminApi = {
 
   getDashboard: () => api.get<DashboardStats>("/api/admin/dashboard"),
 
-  getStatistics: () => api.get<DashboardStats>("/api/admin/statistics"),
+  getStatistics: () => api.get<AdminStatistics>("/api/admin/statistics"),
 
   deleteDoctor: (id: number) => api.delete(`/api/admin/doctor/delete/${id}`),
 
@@ -89,4 +83,9 @@ export const adminApi = {
 
   updatePatient: (data: Partial<Patient>) =>
     api.put<Patient>("/api/admin/patient/update/info", data),
+  updatePatientPassword: (id: number, newPassword: string) =>
+    api.put<ApiMessage>(`/api/admin/patient/update/password/${id}`, { newPassword }),
+
+  updateDoctorPassword: (id: number, newPassword: string) =>
+    api.put<ApiMessage>(`/api/admin/doctor/update/password/${id}`, { newPassword }),
 };

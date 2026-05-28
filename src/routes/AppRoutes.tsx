@@ -22,6 +22,8 @@ const DoctorAppointments = lazy(() => import("@/features/doctor/pages/Appointmen
 
 // ─── Admin Pages ──────────────────────────────────────────────────────────────
 const AdminDashboard = lazy(() => import("@/features/admin/pages/Dashboard"));
+const AdminPatients = lazy(() => import("@/features/admin/pages/Patients"));
+const AdminDoctors = lazy(() => import("@/features/admin/pages/Doctors"));
 
 // ─── Misc ─────────────────────────────────────────────────────────────────────
 const UnauthorizedPage = lazy(() => import("@/pages/Unauthorized"));
@@ -80,6 +82,8 @@ export default function AppRoutes() {
         {/* Admin routes */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/patients" element={<AdminPatients />} />
+          <Route path="/admin/doctors" element={<AdminDoctors />} />
         </Route>
 
         {/* Misc */}
