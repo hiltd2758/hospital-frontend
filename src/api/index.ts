@@ -40,6 +40,9 @@ export const patientApi = {
 
   getAppointments: () =>
     api.get<Appointment[]>("/api/patient/appointment/list"),
+
+  cancelAppointment: (id: number) =>
+    api.post<ApiMessage>(`/api/patient/appointment/cancel/${id}`),
 };
 
 // ─── Doctor ───────────────────────────────────────────────────────────────────
@@ -82,8 +85,7 @@ export const adminApi = {
   updateDoctor: (data: Partial<Doctor>) =>
     api.put<Doctor>("/api/admin/doctor/update/info", data),
 
-  deletePatient: (id: number) =>
-    api.delete(`/api/admin/patient/delete/${id}`),
+  deletePatient: (id: number) => api.delete(`/api/admin/patient/delete/${id}`),
 
   updatePatient: (data: Partial<Patient>) =>
     api.put<Patient>("/api/admin/patient/update/info", data),

@@ -7,7 +7,6 @@ import type { LoginRequest } from "@/types";
 export function useAdminLogin() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
-
   return useMutation({
     mutationFn: (data: LoginRequest) => adminApi.login(data),
     onSuccess: () => {

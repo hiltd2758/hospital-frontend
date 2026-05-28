@@ -14,13 +14,11 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       role: null,
       isAuthenticated: false,
-
       setAuth: (role) => set({ role, isAuthenticated: true }),
-
       clearAuth: () => set({ role: null, isAuthenticated: false }),
     }),
     {
-      name: "auth-storage", // lưu role vào localStorage (token vẫn là cookie)
+      name: "auth-storage",
       partialize: (state) => ({
         role: state.role,
         isAuthenticated: state.isAuthenticated,

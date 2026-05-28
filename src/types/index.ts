@@ -24,7 +24,7 @@ export interface Patient {
   fullName: string;
   firstName: string;
   lastName: string;
-  phone: string;
+  phone?: string;
   address: string;
   dateOfBirth: string; // ISO date string
   avatar?: string;
@@ -35,11 +35,10 @@ export interface PatientRegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
-  phone: string;
+  phone?: string;
   address?: string;
   dateOfBirth?: string;
 }
-
 export interface ClinicalInfo {
   // Extend when backend clarifies fields
   [key: string]: unknown;

@@ -11,9 +11,9 @@ export function useDoctorLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) => doctorApi.login(data),
     onSuccess: () => {
-      setAuth("doctor");
-      navigate("/doctor/dashboard");
-    },
+  setAuth("doctor");
+  navigate("/doctor/dashboard");
+},
   });
 }
 
