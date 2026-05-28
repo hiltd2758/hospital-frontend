@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { patientApi } from "@/api";
-import { useAuthStore } from "@/store/authStore";
 import type { Doctor, AppointmentRequest } from "@/types";
 
 export default function BookAppointment() {

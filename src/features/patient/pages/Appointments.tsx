@@ -18,16 +18,12 @@ const FILTERS: { label: string; value: AppointmentStatus | "ALL" }[] = [
   { label: "Đã huỷ", value: "CANCELLED" },
 ];
 
-interface Toast { id: number; message: string; type: "success" | "error" }
-
 export default function Appointments() {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<AppointmentStatus | "ALL">("ALL");
   const [search, setSearch] = useState("");
-  const [cancelling, setCancelling] = useState<number | null>(null);
-  const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
     patientApi.getAppointments()
@@ -35,27 +31,6 @@ export default function Appointments() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
-
-  const addToast = (message: string, type: "success" | "error") => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 3000);
-  };
-
-  const handleCancel = async (id: number) => {
-    setCancelling(id);
-    try {
-      await patientApi.cancelAppointment(id);
-      setAppointments((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, status: "CANCELLED" } : a))
-      );
-      addToast("Đã huỷ lịch hẹn.", "success");
-    } catch {
-      addToast("Huỷ thất bại. Vui lòng thử lại.", "error");
-    } finally {
-      setCancelling(null);
-    }
-  };
 
   const filtered = appointments.filter((a) => {
     const matchFilter = filter === "ALL" || a.status === filter;
@@ -66,20 +41,6 @@ export default function Appointments() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
-
-      {/* Toast */}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map((t) => (
-          <div
-            key={t.id}
-            className={`px-4 py-3 rounded-lg text-sm font-medium shadow-md text-white ${t.type === "success" ? "bg-green-600" : "bg-red-500"
-              }`}
-          >
-            {t.message}
-          </div>
-        ))}
-      </div>
-
       {/* Back */}
       <button
         onClick={() => navigate(-1)}

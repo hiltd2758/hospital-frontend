@@ -17,8 +17,7 @@ export default function LoginPage() {
         setLoading(true);
         try {
             await adminApi.login({ email, password });
-            const res = await adminApi.login({ email, password });
-            setAuth(res.data.token, "ADMIN");
+            setAuth("admin");
             navigate("/admin/dashboard");
         } catch {
             setError("Email hoặc mật khẩu không đúng");
