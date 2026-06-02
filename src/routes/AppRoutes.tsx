@@ -19,6 +19,7 @@ const BookAppointment = lazy(() => import("@/features/patient/pages/BookAppointm
 const DoctorDashboard = lazy(() => import("@/features/doctor/pages/Dashboard"));
 const DoctorProfile = lazy(() => import("@/features/doctor/pages/Profile"));
 const DoctorAppointments = lazy(() => import("@/features/doctor/pages/Appointments"));
+const DoctorPatientDetail = lazy(() => import("@/features/doctor/pages/PatientDetail"));
 
 // ─── Admin Pages ──────────────────────────────────────────────────────────────
 const AdminDashboard = lazy(() => import("@/features/admin/pages/Dashboard"));
@@ -77,6 +78,7 @@ export default function AppRoutes() {
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/profile" element={<DoctorProfile />} />
           <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+          <Route path="/doctor/patient/:patientId" element={<DoctorPatientDetail />} />
         </Route>
 
         {/* Admin routes */}

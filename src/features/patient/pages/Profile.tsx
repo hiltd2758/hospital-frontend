@@ -12,6 +12,9 @@ export default function PatientProfile() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [clinicalInfo, setClinicalInfo] = useState<Record<string, unknown> | null>(null);
+  const [clinicalLoading, setClinicalLoading] = useState(true);
+  const [clinicalError, setClinicalError] = useState("");
 
   useEffect(() => {
     patientApi
@@ -23,6 +26,19 @@ export default function PatientProfile() {
       .catch(() => setError("Không thể tải thông tin."))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!patient) return;
+    setClinicalLoading(true);
+    setClinicalError("");
+    patientApi
+      .getClinicalInfo(patient.id)
+      .then((res) => {
+        setClinicalInfo(res.data);
+      })
+      .catch(() => setClinicalError("Không thể tải thông tin lâm sàng."))
+      .finally(() => setClinicalLoading(false));
+  }, [patient]);
 
   const handleSave = async () => {
     if (!patient) return;
@@ -139,6 +155,35 @@ export default function PatientProfile() {
                 Huỷ
               </button>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Clinical Information Section */}
+      <div>
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
+          Thông tin lâm sàng
+        </p>
+        <div className="bg-white border border-gray-100 rounded-xl p-5">
+          {clinicalLoading ? (
+            <p className="text-sm text-gray-400">Đang tải thông tin lâm sàng...</p>
+          ) : clinicalError ? (
+            <p className="text-sm text-red-600">{clinicalError}</p>
+          ) : clinicalInfo && Object.keys(clinicalInfo).length > 0 ? (
+            <div className="space-y-4">
+              {Object.entries(clinicalInfo).map(([key, value]) => (
+                <div key={key} className="flex justify-between items-start">
+                  <span className="text-xs text-gray-400 font-medium capitalize">
+                    {key.replace(/_/g, " ")}
+                  </span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {typeof value === "object" ? JSON.stringify(value) : String(value) || "—"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-300">Không có thông tin lâm sàng</p>
           )}
         </div>
       </div>

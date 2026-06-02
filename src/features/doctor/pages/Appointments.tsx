@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { doctorApi } from "@/api";
 import type { Appointment, AppointmentStatus } from "@/types";
 
@@ -137,13 +138,19 @@ function AppointmentRow({
   updating: boolean;
   onUpdateStatus: (id: number, status: AppointmentStatus) => void;
 }) {
+  const navigate = useNavigate();
   const s = STATUS_MAP[appt.status] ?? { label: appt.status, cls: "bg-gray-100 text-gray-600" };
   const dt = new Date(appt.scheduleTime);
 
   return (
     <tr className="border-t border-gray-100 hover:bg-gray-50 transition">
-      <td className="px-4 py-3 font-medium text-gray-900">
-        {appt.patientName ?? `Bệnh nhân #${appt.patientId}`}
+      <td className="px-4 py-3 font-medium">
+        <button
+          onClick={() => navigate(`/doctor/patient/${appt.patientId}`)}
+          className="text-blue-600 hover:underline transition"
+        >
+          {appt.patientName ?? `Bệnh nhân #${appt.patientId}`}
+        </button>
       </td>
       <td className="px-4 py-3 text-gray-500">
         {dt.toLocaleDateString("vi-VN")}{" "}

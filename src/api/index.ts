@@ -39,8 +39,8 @@ export const patientApi = {
   getAppointments: () =>
     api.get<Appointment[]>("/api/patient/appointment/list"),
 
-  cancelAppointment: (id: number) =>
-    api.post<ApiMessage>(`/api/patient/appointment/cancel/${id}`),
+  // cancelAppointment: (id: number) =>
+  //   api.post<ApiMessage>(`/api/patient/appointment/cancel/${id}`),
 };
 
 export const doctorApi = {
@@ -62,6 +62,9 @@ export const doctorApi = {
   getDashboard: () => api.get<DashboardStats>("/api/doctor/dashboard"),
 
   getPatient: (id: number) => api.get<Patient>(`/api/doctor/patient/${id}`),
+
+  updatePatientRecord: (id: number, data: Record<string, unknown>) =>
+    api.post<ApiMessage>(`/api/doctor/patient/${id}`, data),
 };
 
 export const adminApi = {
