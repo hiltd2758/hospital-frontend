@@ -1,7 +1,8 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuthStore } from "@/store/authStore";
+import Header from "@/components/layout/Header";
 
 // ─── Auth Pages ───────────────────────────────────────────────────────────────
 const LoginPage = lazy(() => import("@/features/patient/pages/LoginPage"));
@@ -28,6 +29,29 @@ const AdminDoctors = lazy(() => import("@/features/admin/pages/Doctors"));
 // ─── Misc ─────────────────────────────────────────────────────────────────────
 const UnauthorizedPage = lazy(() => import("@/pages/Unauthorized"));
 const NotFoundPage = lazy(() => import("@/pages/NotFound"));
+
+// ─── Layouts ──────────────────────────────────────────────────────────────────
+const PatientLayout = () => {
+  const token = useAuthStore((s) => s.token);
+
+  // Do hiện tại authStore chưa lưu thông tin user object, 
+  // ta sử dụng dữ liệu fallback để truyền vào Header cho khỏi lỗi TypeScript
+  const patientData = {
+    id: '1',
+    lastName: 'Patient',
+    avatar: null,
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header patient={patientData} patientToken={token || ''} />
+
+      <main className="flex-grow bg-gray-50">
+        <Outlet />
+      </main>
+    </div>
+  );
+};
 
 const ROLE_REDIRECT: Record<string, string> = {
   admin: "/admin/dashboard",
@@ -66,10 +90,12 @@ export default function AppRoutes() {
 
         {/* Patient routes */}
         <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-          <Route path="/patient/dashboard" element={<PatientDashboard />} />
-          <Route path="/patient/profile" element={<PatientProfile />} />
-          <Route path="/patient/appointments" element={<PatientAppointments />} />
-          <Route path="/patient/appointments/book" element={<BookAppointment />} />
+          <Route element={<PatientLayout />}>
+            <Route path="/patient/dashboard" element={<PatientDashboard />} />
+            <Route path="/patient/profile" element={<PatientProfile />} />
+            <Route path="/patient/appointments" element={<PatientAppointments />} />
+            <Route path="/patient/appointments/book" element={<BookAppointment />} />
+          </Route>
         </Route>
 
         {/* Doctor routes */}
