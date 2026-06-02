@@ -34,6 +34,14 @@ export const Header: React.FC<HeaderProps> = ({ patient, patientToken }) => {
           <i
             className="bi bi-list text-[#444444] text-[28px] leading-none mr-2.5 cursor-pointer transition-colors duration-300 xl:hidden"
             onClick={() => setIsMobileMenuOpen(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsMobileMenuOpen(true);
+              }
+            }}
           ></i>
         </div>
       </div>

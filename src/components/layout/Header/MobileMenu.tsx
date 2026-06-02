@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Patient } from './Header/index';
+import { Patient } from './index'; // <-- Tớ sửa lại import này luôn cho chuẩn nhé
 import defaultAvatar from '../../../assets/img/default-avatar.png';
 
 interface MobileMenuProps {
@@ -28,7 +28,16 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ patient, patientToken, i
 
   return (
     <div className="fixed inset-0 bg-[#212529]/80 z-[9999] xl:hidden transition-all duration-300">
-      <i className="bi bi-x text-white absolute top-[15px] right-[15px] text-[32px] cursor-pointer" onClick={onClose}></i>
+      {/* Đổi thẻ <i> thành <button> */}
+      <button
+        type="button"
+        className="absolute top-[15px] right-[15px] bg-transparent border-none p-0 cursor-pointer"
+        onClick={onClose}
+        aria-label="Close menu"
+      >
+        <i className="bi bi-x text-white text-[32px]"></i>
+      </button>
+
       <div className="absolute inset-[60px_20px_20px_20px] bg-white rounded-md py-2.5 px-0 overflow-y-auto shadow-[0_0_30px_rgba(0,0,0,0.1)]">
         <ul className="list-none p-0 m-0 flex flex-col">
           <li><a href="/patient/index" className="flex items-center justify-between py-2.5 px-5 text-[#444444] hover:text-[#3fbbc0] text-[17px] font-medium transition-colors" onClick={onClose}>Home</a></li>
@@ -39,13 +48,19 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ patient, patientToken, i
           <li><a href="/patient/appointment/book" className="flex items-center justify-between py-2.5 px-5 text-[#3fbbc0] text-[17px] font-medium transition-colors" onClick={onClose}>Make an Appointment</a></li>
 
           <li className="flex flex-col">
-            <div className="flex items-center justify-between py-2.5 px-5 text-[#444444] text-[17px] font-medium cursor-pointer" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            {/* Đổi thẻ <div> thành <button> */}
+            <button
+              type="button"
+              className="flex items-center justify-between w-full py-2.5 px-5 text-[#444444] text-[17px] font-medium cursor-pointer bg-transparent border-none text-left"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              aria-expanded={isDropdownOpen}
+            >
               <div className="flex items-center">
                 <img src={avatarSrc} alt="Profile" className="rounded-full mr-2 w-[30px] h-[30px] object-cover" />
                 <span>{patient.lastName}</span>
               </div>
               <i className={`bi bi-chevron-down w-[30px] h-[30px] flex items-center justify-center rounded-full transition-all duration-300 text-[12px] ${isDropdownOpen ? 'bg-[#3fbbc0] text-white rotate-180' : 'bg-[#3fbbc0]/10 hover:bg-[#3fbbc0] hover:text-white'}`}></i>
-            </div>
+            </button>
 
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isDropdownOpen ? 'max-h-96' : 'max-h-0'}`}>
               <ul className="list-none py-2.5 px-0 my-2.5 mx-5 bg-white border border-[#444444]/10">
