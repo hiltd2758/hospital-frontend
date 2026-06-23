@@ -11,19 +11,20 @@ exports.config = {
   output: './tests/output',
   helpers: {
     Playwright: {
-  browser: 'chromium',
-  url: process.env.TEST_BASE_URL || 'http://localhost:3000',
-  show: true,
-  waitForNavigation: 'load',      // ← đổi từ 'networkidle' sang 'load'
-  waitForTimeout: 5000,
-},
+      browser: 'chromium',
+      url: process.env.TEST_BASE_URL || 'http://localhost:3000',
+      show: true,
+      waitForNavigation: 'load',      // ← đổi từ 'networkidle' sang 'load'
+      waitForTimeout: 5000,
+    },
   },
-  
+
   include: {
     // Page Objects — dùng require() vì file .cjs
-    PatientLoginPage : './tests/pages/PatientLoginPage.cjs',
-    DoctorLoginPage  : './tests/pages/DoctorLoginPage.cjs',
-    AdminLoginPage   : './tests/pages/AdminLoginPage.cjs',
+    PatientLoginPage: './tests/pages/PatientLoginPage.cjs',
+    DoctorLoginPage: './tests/pages/DoctorLoginPage.cjs',
+    AdminLoginPage: './tests/pages/AdminLoginPage.cjs',
+    AdminPatientsPage: './tests/pages/AdminPatientsPage.cjs'
   },
   plugins: {
     pauseOnFail: {},          // dừng lại khi fail để debug
