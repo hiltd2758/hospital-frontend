@@ -24,6 +24,10 @@ exports.config = {
     PatientLoginPage : './tests/pages/PatientLoginPage.cjs',
     DoctorLoginPage  : './tests/pages/DoctorLoginPage.cjs',
     AdminLoginPage   : './tests/pages/AdminLoginPage.cjs',
+
+    DoctorDashboardPage: './tests/pages/DoctorDashboardPage.cjs',
+    DoctorProfilePage: './tests/pages/DoctorProfilePage.cjs',
+    AdminDashboardPage: './tests/pages/AdminDashboardPage.cjs',
   },
   plugins: {
     pauseOnFail: {},          // dừng lại khi fail để debug

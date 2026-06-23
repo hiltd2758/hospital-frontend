@@ -19,7 +19,7 @@ Scenario('Hiển thị form đăng nhập admin', ({ I, AdminLoginPage }) => {
 Scenario('Đăng nhập thành công với tài khoản admin hợp lệ', ({ I, AdminLoginPage }) => {
   AdminLoginPage.open();
   AdminLoginPage.loginSuccessfully(ADMIN_EMAIL, ADMIN_PASSWORD);
-I.see('Xin chào');  
+I.waitForText("Xin chào", 5); 
 });
 
 Scenario('Hiển thị lỗi khi sai thông tin đăng nhập', ({ I, AdminLoginPage }) => {
