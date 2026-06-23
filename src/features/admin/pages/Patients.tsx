@@ -1,4 +1,4 @@
-        import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminApi } from "@/api";
 import type { Patient } from "@/types";
@@ -32,12 +32,15 @@ export default function PatientsPage() {
     fetchPatients();
   }, []);
 
-  const filtered = patients.filter(
-    (p) =>
-      p.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+  // Gộp firstName và lastName để tìm kiếm chính xác
+  const filtered = patients.filter((p) => {
+    const fullName = `${p.firstName || ""} ${p.lastName || ""}`.trim().toLowerCase();
+    return (
+      fullName.includes(search.toLowerCase()) ||
       p.email?.toLowerCase().includes(search.toLowerCase()) ||
       p.phone?.includes(search)
-  );
+    );
+  });
 
   const openEdit = (p: Patient) => {
     setSelected(p);
@@ -78,7 +81,7 @@ export default function PatientsPage() {
     setError("");
     try {
       await adminApi.updatePatient(formData);
-      showSuccess("Cập nhật thành công!");
+      showSuccess("cập nhật thành công");
       closeModal();
       fetchPatients();
     } catch {
@@ -94,7 +97,7 @@ export default function PatientsPage() {
     setError("");
     try {
       await (adminApi as any).updatePatientPassword(selected.id, newPassword);
-      showSuccess("Đổi mật khẩu thành công!");
+      showSuccess("đổi mật khẩu thành công");
       closeModal();
     } catch {
       setError("Đổi mật khẩu thất bại. Vui lòng thử lại.");
@@ -106,7 +109,7 @@ export default function PatientsPage() {
   const handleDelete = async (id: number) => {
     try {
       await adminApi.deletePatient(id);
-      showSuccess("Đã xóa bệnh nhân.");
+      showSuccess("Đã xóa");
       setDeleteConfirmId(null);
       fetchPatients();
     } catch {
@@ -124,7 +127,6 @@ export default function PatientsPage() {
       )}
 
       <div className="max-w-6xl mx-auto p-8 space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -149,7 +151,7 @@ export default function PatientsPage() {
           </svg>
           <input
             type="text"
-            placeholder="Tìm theo tên, email, số điện thoại..."
+            placeholder="Tìm kiếm theo tên, email, số điện thoại..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -179,10 +181,10 @@ export default function PatientsPage() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-semibold text-xs flex-shrink-0">
-                          {p.fullName?.charAt(0) ?? "?"}
+                          {p.firstName?.charAt(0) ?? "?"}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{p.fullName}</p>
+                          <p className="font-medium text-gray-900">{p.firstName} {p.lastName}</p>
                           <p className="text-gray-400 text-xs">{p.email}</p>
                         </div>
                       </div>
@@ -193,14 +195,16 @@ export default function PatientsPage() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-1">
                         <button
+                          title="Sửa"
                           onClick={() => openEdit(p)}
-                          className="px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          className="edit px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition"
                         >
                           Sửa
                         </button>
                         <button
+                          title="Đổi mật khẩu"
                           onClick={() => openPassword(p)}
-                          className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                          className="password px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition"
                         >
                           Mật khẩu
                         </button>
@@ -208,7 +212,7 @@ export default function PatientsPage() {
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleDelete(p.id)}
-                              className="px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                              className="px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition confirm-delete"
                             >
                               Xác nhận
                             </button>
@@ -221,8 +225,9 @@ export default function PatientsPage() {
                           </div>
                         ) : (
                           <button
+                            title="Xóa"
                             onClick={() => setDeleteConfirmId(p.id)}
-                            className="px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-lg transition"
+                            className="delete px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50 rounded-lg transition"
                           >
                             Xóa
                           </button>
@@ -254,7 +259,7 @@ export default function PatientsPage() {
 
             <div className="px-6 py-5 space-y-4">
               <p className="text-sm text-gray-500">
-                Bệnh nhân: <span className="font-medium text-gray-800">{selected.fullName}</span>
+                Bệnh nhân: <span className="font-medium text-gray-800">{selected.firstName} {selected.lastName}</span>
               </p>
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -267,7 +272,8 @@ export default function PatientsPage() {
                   </div>
                   <Field label="Email" value={formData.email ?? ""} onChange={(v) => setFormData((f) => ({ ...f, email: v }))} type="email" />
                   <Field label="Số điện thoại" value={formData.phone ?? ""} onChange={(v) => setFormData((f) => ({ ...f, phone: v }))} />
-                  <Field label="Ngày sinh" value={formData.dateOfBirth ?? ""} onChange={(v) => setFormData((f) => ({ ...f, dateOfBirth: v }))} type="date" />
+
+                  <Field label="Ngày sinh" value={formData.dateOfBirth ?? ""} onChange={(v) => setFormData((f) => ({ ...f, dateOfBirth: v }))} type="text" placeholder="DD/MM/YYYY" />
                   <Field label="Địa chỉ" value={formData.address ?? ""} onChange={(v) => setFormData((f) => ({ ...f, address: v }))} />
                 </>
               ) : (
@@ -286,6 +292,7 @@ export default function PatientsPage() {
                 Huỷ
               </button>
               <button
+                type="submit"
                 onClick={modalMode === "edit" ? handleUpdateInfo : handleUpdatePassword}
                 disabled={saving}
                 className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 rounded-lg transition"
@@ -316,13 +323,15 @@ function Field({
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs font-medium text-gray-600">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-      />
+      <div className="w-full">
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+        />
+      </div>
     </div>
   );
 }
