@@ -6,7 +6,7 @@
  */
 Feature('Admin Login');
 
-const ADMIN_EMAIL    = process.env.TEST_ADMIN_EMAIL    || 'admin@hospital.com';
+const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'admin@hospital.com';
 const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'admin123';
 
 Scenario('Hiển thị form đăng nhập admin', ({ I, AdminLoginPage }) => {
@@ -19,7 +19,7 @@ Scenario('Hiển thị form đăng nhập admin', ({ I, AdminLoginPage }) => {
 Scenario('Đăng nhập thành công với tài khoản admin hợp lệ', ({ I, AdminLoginPage }) => {
   AdminLoginPage.open();
   AdminLoginPage.loginSuccessfully(ADMIN_EMAIL, ADMIN_PASSWORD);
-I.see('Xin chào');  
+  I.see('Xin chào,');
 });
 
 Scenario('Hiển thị lỗi khi sai thông tin đăng nhập', ({ I, AdminLoginPage }) => {
@@ -36,7 +36,7 @@ Scenario('Truy cập /admin/dashboard khi chưa login → redirect về /login',
 });
 
 Scenario('Patient không thể truy cập admin dashboard', ({ I, PatientLoginPage }) => {
-  const pEmail    = process.env.TEST_PATIENT_EMAIL    || 'patient@test.com';
+  const pEmail = process.env.TEST_PATIENT_EMAIL || 'patient@test.com';
   const pPassword = process.env.TEST_PATIENT_PASSWORD || 'password123';
 
   PatientLoginPage.open();

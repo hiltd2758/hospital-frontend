@@ -1,7 +1,6 @@
 require('dotenv').config({ path: '.env.test' });
 const { setHeadlessWhen, setCommonPlugins } = require('@codeceptjs/configure');
 
-// Tự động headless khi chạy CI
 setHeadlessWhen(process.env.CI);
 setCommonPlugins();
 
@@ -11,28 +10,31 @@ exports.config = {
   output: './tests/output',
   helpers: {
     Playwright: {
-  browser: 'chromium',
-  url: process.env.TEST_BASE_URL || 'http://localhost:3000',
-  show: true,
-  waitForNavigation: 'load',      // ← đổi từ 'networkidle' sang 'load'
-  waitForTimeout: 5000,
-},
+      browser: 'chromium',
+      url: process.env.TEST_BASE_URL || 'http://localhost:3000',
+      show: true,
+      waitForNavigation: 'load',
+      waitForTimeout: 5000,
+    },
+    REST: {
+      endpoint: process.env.TEST_API_URL || 'http://localhost:8080',
+    },
   },
-  
+
   include: {
-    // Page Objects — dùng require() vì file .cjs
-    PatientLoginPage : './tests/pages/PatientLoginPage.cjs',
-    DoctorLoginPage  : './tests/pages/DoctorLoginPage.cjs',
-    AdminLoginPage   : './tests/pages/AdminLoginPage.cjs',
+    PatientLoginPage: './tests/pages/PatientLoginPage.cjs',
+    DoctorLoginPage: './tests/pages/DoctorLoginPage.cjs',
+    AdminLoginPage: './tests/pages/AdminLoginPage.cjs',
+    DoctorPatientDetailPage: './tests/pages/DoctorPatientDetailPage.cjs',  // ← thêm
   },
   plugins: {
-    pauseOnFail: {},          // dừng lại khi fail để debug
+    pauseOnFail: {},
     retryFailedStep: {
       enabled: true,
-      retries: 2,             // tự retry 2 lần nếu step bị flaky
+      retries: 2,
     },
     screenshotOnFail: {
-      enabled: true,          // chụp màn hình khi test fail
+      enabled: true,
     },
     allure: {
       enabled: !!process.env.ALLURE_REPORT,

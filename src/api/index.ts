@@ -38,9 +38,6 @@ export const patientApi = {
 
   getAppointments: () =>
     api.get<Appointment[]>("/api/patient/appointment/list"),
-
-  // cancelAppointment: (id: number) =>
-  //   api.post<ApiMessage>(`/api/patient/appointment/cancel/${id}`),
 };
 
 export const doctorApi = {
@@ -61,7 +58,10 @@ export const doctorApi = {
 
   getDashboard: () => api.get<DashboardStats>("/api/doctor/dashboard"),
 
-  getPatient: (id: number) => api.get<Patient>(`/api/doctor/patient/${id}`),
+  getPatient: (id: number) =>
+    api.get<{ patient: Patient; clinicalInfo: ClinicalInfo }>(
+      `/api/doctor/patient/${id}`,
+    ),
 
   updatePatientRecord: (id: number, data: Record<string, unknown>) =>
     api.post<ApiMessage>(`/api/doctor/patient/${id}`, data),
@@ -86,9 +86,14 @@ export const adminApi = {
 
   updatePatient: (data: Partial<Patient>) =>
     api.put<Patient>("/api/admin/patient/update/info", data),
+
   updatePatientPassword: (id: number, newPassword: string) =>
-    api.put<ApiMessage>(`/api/admin/patient/update/password/${id}`, { newPassword }),
+    api.put<ApiMessage>(`/api/admin/patient/update/password/${id}`, {
+      newPassword,
+    }),
 
   updateDoctorPassword: (id: number, newPassword: string) =>
-    api.put<ApiMessage>(`/api/admin/doctor/update/password/${id}`, { newPassword }),
+    api.put<ApiMessage>(`/api/admin/doctor/update/password/${id}`, {
+      newPassword,
+    }),
 };

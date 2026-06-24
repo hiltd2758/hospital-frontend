@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { doctorApi, patientApi } from "@/api";
-import type { Patient } from "@/types";
+import { doctorApi } from "@/api";
+import type { Patient, ClinicalInfo } from "@/types";
 
 export default function DoctorPatientDetail() {
   const navigate = useNavigate();
   const { patientId } = useParams<{ patientId: string }>();
-  
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+
   const [clinicalInfo, setClinicalInfo] = useState<Record<string, unknown> | null>(null);
   const [clinicalLoading, setClinicalLoading] = useState(true);
   const [clinicalError, setClinicalError] = useState("");
-  
+
   const [editing, setEditing] = useState(false);
   const [clinicalForm, setClinicalForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState("");
   const [saveError, setSaveError] = useState("");
 
-  // Fetch patient info
+  // Gộp 1 useEffect duy nhất — BE trả về { patient, medicalRecord } trong 1 call
   useEffect(() => {
     if (!patientId) {
       setError("ID bệnh nhân không hợp lệ.");
       setLoading(false);
+      setClinicalLoading(false);
       return;
     }
 
@@ -33,47 +34,44 @@ export default function DoctorPatientDetail() {
     if (isNaN(id)) {
       setError("ID bệnh nhân không hợp lệ.");
       setLoading(false);
+      setClinicalLoading(false);
       return;
     }
 
     setLoading(true);
     setError("");
+    setClinicalError("");
+
     doctorApi
       .getPatient(id)
       .then((res) => {
-        setPatient(res.data);
-      })
-      .catch(() => setError("Không thể tải thông tin bệnh nhân."))
-      .finally(() => setLoading(false));
-  }, [patientId]);
+        setPatient(res.data.patient);
 
-  // Fetch clinical info
-  useEffect(() => {
-    if (!patient) return;
-    
-    setClinicalLoading(true);
-    setClinicalError("");
-    patientApi
-      .getClinicalInfo(patient.id)
-      .then((res) => {
-        setClinicalInfo(res.data || {});
+        const record = res.data.clinicalInfo ?? {};
+        setClinicalInfo(record);
+
         const form: Record<string, string> = {};
-        Object.entries(res.data || {}).forEach(([key, value]) => {
-          form[key] = typeof value === "object" ? JSON.stringify(value) : String(value ?? "");
+        Object.entries(record).forEach(([key, value]) => {
+          form[key] = typeof value === "object"
+            ? JSON.stringify(value)
+            : String(value ?? "");
         });
         setClinicalForm(form);
       })
-      .catch(() => setClinicalError("Không thể tải thông tin lâm sàng."))
-      .finally(() => setClinicalLoading(false));
-  }, [patient]);
+      .catch(() => setError("Không thể tải thông tin bệnh nhân."))
+      .finally(() => {
+        setLoading(false);
+        setClinicalLoading(false);
+      });
+  }, [patientId]);
 
   const handleSaveClinical = async () => {
     if (!patient) return;
-    
+
     setSaveError("");
     setSaveSuccess("");
     setSaving(true);
-    
+
     try {
       await doctorApi.updatePatientRecord(patient.id, clinicalForm);
       setClinicalInfo(clinicalForm);
@@ -90,7 +88,9 @@ export default function DoctorPatientDetail() {
   const handleCancelEdit = () => {
     const form: Record<string, string> = {};
     Object.entries(clinicalInfo || {}).forEach(([key, value]) => {
-      form[key] = typeof value === "object" ? JSON.stringify(value) : String(value ?? "");
+      form[key] = typeof value === "object"
+        ? JSON.stringify(value)
+        : String(value ?? "");
     });
     setClinicalForm(form);
     setEditing(false);
@@ -209,7 +209,9 @@ export default function DoctorPatientDetail() {
                     <input
                       type="text"
                       value={clinicalForm[key] ?? ""}
-                      onChange={(e) => setClinicalForm({ ...clinicalForm, [key]: e.target.value })}
+                      onChange={(e) =>
+                        setClinicalForm({ ...clinicalForm, [key]: e.target.value })
+                      }
                       className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   ) : (
@@ -250,7 +252,7 @@ export default function DoctorPatientDetail() {
 function InfoField({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs text-gray-400">{label}</label>
+      <label className="text.xs text-gray-400">{label}</label>
       <p className={`text-sm font-medium ${value ? "text-gray-900" : "text-gray-300"}`}>
         {value || "—"}
       </p>
